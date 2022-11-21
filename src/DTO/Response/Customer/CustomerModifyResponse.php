@@ -3,9 +3,9 @@
 namespace Muratoffalex\SmartyClient\DTO\Response\Customer;
 
 use Muratoffalex\SmartyClient\DTO\Response\AbstractResponse;
+use Muratoffalex\SmartyClient\Traits\ErrorFieldsTrait;
 
 class CustomerModifyResponse extends AbstractResponse
 {
-    /** @var string[] */
-    public array $errorFields;
+    use ErrorFieldsTrait;
 }
