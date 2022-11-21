@@ -6,6 +6,6 @@ use Muratoffalex\SmartyClient\DTO\Response\AbstractResponse;
 
 class CustomerListResponse extends AbstractResponse
 {
-    /** @var CustomerItem[] */
+    /** @var CustomerInfoResponse[] */
     public array $customers;
 }

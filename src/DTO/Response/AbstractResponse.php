@@ -2,7 +2,7 @@
 
 namespace Muratoffalex\SmartyClient\DTO\Response;
 
-abstract class AbstractResponse implements ResponseInterface
+abstract class AbstractResponse
 {
     public int $error;
     public string $errorMessage;

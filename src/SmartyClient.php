@@ -7,19 +7,29 @@ use GuzzleHttp\Exception\GuzzleException;
 use Muratoffalex\SmartyClient\DTO\Request\AbstractRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Account\AccountCreateRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Account\AccountDeleteRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Account\AccountDeviceCreateRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Account\AccountDeviceModifyRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Account\AccountInfoRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Account\AccountListRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Account\AccountModifyRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Account\AccountTariffAssignRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Account\AccountTariffRemoveRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerCreateRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerDeleteRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerInfoRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerListRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerModifyRequest;
+use Muratoffalex\SmartyClient\DTO\Response\AbstractResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Account\AccountCreateResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Account\AccountDeleteResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Account\AccountDeviceCreateResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Account\AccountDeviceDeleteResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Account\AccountDeviceModifyResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Account\AccountInfoResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Account\AccountListResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Account\AccountModifyResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Account\AccountTariffAssignResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Account\AccountTariffRemoveResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerCreateResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerDeleteResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerInfoResponse;
@@ -64,7 +74,7 @@ class SmartyClient implements SmartyClientInterface
     /**
      * @throws GuzzleException
      */
-    private function request(string $method, string $uri, AbstractRequest $request, string $responseClass): ResponseInterface
+    private function request(string $method, string $uri, AbstractRequest $request, string $responseClass): mixed
     {
         $body = json_decode(
             $this->serializer->serialize($request, 'json', [AbstractObjectNormalizer::SKIP_NULL_VALUES => true]),
@@ -89,7 +99,7 @@ class SmartyClient implements SmartyClientInterface
             $responseObject = $this->serializer->deserialize($response->getBody()->getContents(), $responseClass, 'json');
         }
 
-        /** @var ResponseInterface */
+        /** @var AbstractResponse */
         return $responseObject;
     }
 
@@ -111,7 +121,7 @@ class SmartyClient implements SmartyClientInterface
     {
         return $this->request(
             'get',
-            'customer/list/',
+            'customer/list',
             $request ?? CustomerListRequest::create(),
             CustomerListResponse::class
         );
@@ -131,7 +141,7 @@ class SmartyClient implements SmartyClientInterface
     {
         return $this->request(
             'post',
-            'customer/create/',
+            'customer/create',
             $request,
             CustomerCreateResponse::class,
         );
@@ -204,6 +214,56 @@ class SmartyClient implements SmartyClientInterface
             'account/list',
             $request,
             AccountListResponse::class,
+        );
+    }
+
+    public function accountDeviceCreate(AccountDeviceCreateRequest $request): AccountDeviceCreateResponse
+    {
+        return $this->request(
+            'post',
+            'account/device/create',
+            $request,
+            AccountDeviceCreateResponse::class,
+        );
+    }
+
+    public function accountDeviceDelete(AccountDeviceCreateRequest $request): AccountDeviceDeleteResponse
+    {
+        return $this->request(
+            'post',
+            'account/device/delete',
+            $request,
+            AccountDeviceDeleteResponse::class,
+        );
+    }
+
+    public function accountDeviceModify(AccountDeviceModifyRequest $request): AccountDeviceModifyResponse
+    {
+        return $this->request(
+            'post',
+            'account/device/modify',
+            $request,
+            AccountDeviceModifyResponse::class,
+        );
+    }
+
+    public function accountTariffAssign(AccountTariffAssignRequest $request): AccountTariffAssignResponse
+    {
+        return $this->request(
+            'post',
+            'account/tariff/assign',
+            $request,
+            AccountTariffAssignResponse::class,
+        );
+    }
+
+    public function accountTariffRemove(AccountTariffRemoveRequest $request): AccountTariffRemoveResponse
+    {
+        return $this->request(
+            'post',
+            'account/tariff/remove',
+            $request,
+            AccountTariffRemoveResponse::class,
         );
     }
 }
