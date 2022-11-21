@@ -9,10 +9,12 @@ use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerCreateRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerDeleteRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerInfoRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerListRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerModifyRequest;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerCreateResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerDeleteResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerInfoResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerListResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerModifyResponse;
 use Muratoffalex\SmartyClient\DTO\Response\ResponseInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
@@ -47,16 +49,6 @@ class SmartyClient implements SmartyClientInterface
         $normalizers = [new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter()), new ArrayDenormalizer()];
 
         $this->serializer = new Serializer($normalizers, $encoders);
-    }
-
-    public function customerList(?CustomerListRequest $request): CustomerListResponse
-    {
-        return $this->request(
-            'get',
-            'customer/list/',
-            $request ?? CustomerListRequest::create(),
-            CustomerListResponse::class
-        );
     }
 
     /**
@@ -104,6 +96,16 @@ class SmartyClient implements SmartyClientInterface
         return md5($signatureBase64);
     }
 
+    public function customerList(?CustomerListRequest $request): CustomerListResponse
+    {
+        return $this->request(
+            'get',
+            'customer/list/',
+            $request ?? CustomerListRequest::create(),
+            CustomerListResponse::class
+        );
+    }
+
     public function customerInfo(?CustomerInfoRequest $request)
     {
         return $this->request(
@@ -121,6 +123,16 @@ class SmartyClient implements SmartyClientInterface
             'customer/create/',
             $request,
             CustomerCreateResponse::class,
+        );
+    }
+
+    public function customerModify(CustomerModifyRequest $request): CustomerModifyResponse
+    {
+        return $this->request(
+            'post',
+            'customer/modify',
+            $request,
+            CustomerModifyResponse::class,
         );
     }
 
