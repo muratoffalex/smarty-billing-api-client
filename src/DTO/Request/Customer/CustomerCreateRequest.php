@@ -49,8 +49,8 @@ class CustomerCreateRequest extends AbstractRequest
         public ?string $companyName = null,
     )
     {
-//        if (empty($this->firstname) && empty($this->middlename) && empty($this->lastname) && empty($this->comment) && empty($this->companyName)) {
-//            throw new SmartyClientBaseException('One of these values must not be empty: firstname, middlename, lastname, comment, companyName');
-//        }
+        if (empty($this->firstname) && empty($this->middlename) && empty($this->lastname) && empty($this->comment) && empty($this->companyName)) {
+            throw new SmartyClientBaseException('One of these values must not be empty: firstname, middlename, lastname, comment, companyName');
+        }
     }
 }
