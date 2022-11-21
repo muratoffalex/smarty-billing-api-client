@@ -5,11 +5,21 @@ namespace Muratoffalex\SmartyClient;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Muratoffalex\SmartyClient\DTO\Request\AbstractRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Account\AccountCreateRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Account\AccountDeleteRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Account\AccountInfoRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Account\AccountListRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Account\AccountModifyRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerCreateRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerDeleteRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerInfoRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerListRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerModifyRequest;
+use Muratoffalex\SmartyClient\DTO\Response\Account\AccountCreateResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Account\AccountDeleteResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Account\AccountInfoResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Account\AccountListResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Account\AccountModifyResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerCreateResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerDeleteResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerInfoResponse;
@@ -71,6 +81,7 @@ class SmartyClient implements SmartyClientInterface
         if ($method === 'post') {
             $options['form_params'] = $body;
         }
+        var_dump($options);
 
         $response = $this->client->request($method, $uri, $options);
 
@@ -146,8 +157,53 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
-//    public function addCustomer(CustomerCreateRequest $request): ResponseInterface
-//    {
-//        return $this->request('post', 'customer/create/', $request);
-//    }
+    public function accountCreate(AccountCreateRequest $request): AccountCreateResponse
+    {
+        return $this->request(
+            'post',
+            'account/create',
+            $request,
+            AccountCreateResponse::class,
+        );
+    }
+
+    public function accountModify(AccountModifyRequest $request): AccountModifyResponse
+    {
+        return $this->request(
+            'post',
+            'account/modify',
+            $request,
+            AccountModifyResponse::class,
+        );
+    }
+
+    public function accountDelete(AccountDeleteRequest $request): AccountDeleteResponse
+    {
+        return $this->request(
+            'post',
+            'account/delete',
+            $request,
+            AccountDeleteResponse::class,
+        );
+    }
+
+    public function accountInfo(AccountInfoRequest $request): AccountInfoResponse
+    {
+        return $this->request(
+            'get',
+            'account/info',
+            $request,
+            AccountInfoResponse::class,
+        );
+    }
+
+    public function accountList(AccountListRequest $request): AccountListResponse
+    {
+        return $this->request(
+            'get',
+            'account/list',
+            $request,
+            AccountListResponse::class,
+        );
+    }
 }
