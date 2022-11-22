@@ -1,6 +1,8 @@
 {
-    "name": "muratoffalex/smarty-client",
+    "name": "muratoffalex/smarty-billing-api-client",
     "type": "library",
+    "minimum-stability": "stable",
+    "prefer-stable": false,
     "autoload": {
         "psr-4": {
             "Muratoffalex\\SmartyClient\\": "src/"
