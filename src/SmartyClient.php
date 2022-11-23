@@ -131,7 +131,7 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
-    public function customerInfo(?CustomerInfoRequest $request)
+    public function customerInfo(?CustomerInfoRequest $request): CustomerInfoResponse
     {
         return $this->request(
             'get',
