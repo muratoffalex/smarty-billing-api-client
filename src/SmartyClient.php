@@ -54,12 +54,15 @@ class SmartyClient implements SmartyClientInterface
     private string $billingApiKey;
     private int $clientId;
 
+    private bool $debug;
+
     private SerializerInterface $serializer;
 
     public function __construct(
         string $billingApiUrl,
         string $billingApiKey,
         int    $clientId,
+        bool $debug = false
     )
     {
         $this->billingApiKey = $billingApiKey;
@@ -68,6 +71,7 @@ class SmartyClient implements SmartyClientInterface
             'base_uri' => $billingApiUrl,
             'timeout' => 2,
         ]);
+        $this->debug = $debug;
 
         $encoders = [new JsonEncoder()];
         $normalizers = [new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter()), new ArrayDenormalizer()];
@@ -95,7 +99,9 @@ class SmartyClient implements SmartyClientInterface
         if ($method === 'post') {
             $options['form_params'] = $body;
         }
-        var_dump($options);
+        if ($this->debug) {
+            var_dump($options);
+        }
 
         $response = $this->client->request($method, $uri, $options);
 
