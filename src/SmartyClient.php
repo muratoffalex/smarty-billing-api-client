@@ -99,7 +99,7 @@ class SmartyClient implements SmartyClientInterface
         if ($method === 'post') {
             $options['form_params'] = $body;
         }
-        if ($this->debug) {
+        if ($this->isDebug()) {
             var_dump($options);
         }
 
@@ -295,5 +295,21 @@ class SmartyClient implements SmartyClientInterface
             $request,
             AccountTariffRemoveResponse::class,
         );
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDebug(): bool
+    {
+        return $this->debug;
+    }
+
+    /**
+     * @param bool $debug
+     */
+    public function setDebug(bool $debug): void
+    {
+        $this->debug = $debug;
     }
 }
