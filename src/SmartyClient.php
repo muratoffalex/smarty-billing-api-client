@@ -19,6 +19,8 @@ use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerDeleteRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerInfoRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerListRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerModifyRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerTariffAssignRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerTariffRemoveRequest;
 use Muratoffalex\SmartyClient\DTO\Response\AbstractResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Account\AccountCreateResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Account\AccountDeleteResponse;
@@ -35,6 +37,8 @@ use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerDeleteResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerInfoResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerListResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerModifyResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerTariffAssignResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerTariffRemoveResponse;
 use Muratoffalex\SmartyClient\DTO\Response\ResponseInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
@@ -164,6 +168,26 @@ class SmartyClient implements SmartyClientInterface
             'customer/delete',
             $request,
             CustomerDeleteResponse::class,
+        );
+    }
+
+    public function customerTariffAssign(CustomerTariffAssignRequest $request): CustomerTariffAssignResponse
+    {
+        return $this->request(
+            'post',
+            'customer/tariff/assign',
+            $request,
+            CustomerTariffAssignResponse::class,
+        );
+    }
+
+    public function customerTariffRemove(CustomerTariffRemoveRequest $request): CustomerTariffRemoveResponse
+    {
+        return $this->request(
+            'post',
+            'customer/tariff/remove',
+            $request,
+            CustomerTariffRemoveResponse::class,
         );
     }
 
