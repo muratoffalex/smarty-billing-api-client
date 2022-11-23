@@ -95,7 +95,7 @@ class SmartyClient implements SmartyClientInterface
         if ($method === 'post') {
             $options['form_params'] = $body;
         }
-        var_dump($options);
+//        var_dump($options);
 
         $response = $this->client->request($method, $uri, $options);
 
