@@ -95,7 +95,7 @@ class SmartyClient implements SmartyClientInterface
         if ($method === 'post') {
             $options['form_params'] = $body;
         }
-//        var_dump($options);
+        var_dump($options);
 
         $response = $this->client->request($method, $uri, $options);
 
@@ -134,9 +134,9 @@ class SmartyClient implements SmartyClientInterface
     public function customerInfo(?CustomerInfoRequest $request): CustomerInfoResponse
     {
         return $this->request(
-            'get',
+            'post',
             'customer/info',
-            $request ?? CustomerInfoRequest::create(),
+            $request,
             CustomerInfoResponse::class,
         );
     }
@@ -224,7 +224,7 @@ class SmartyClient implements SmartyClientInterface
     public function accountInfo(AccountInfoRequest $request): AccountInfoResponse
     {
         return $this->request(
-            'get',
+            'post',
             'account/info',
             $request,
             AccountInfoResponse::class,
