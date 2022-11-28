@@ -21,6 +21,7 @@ use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerListRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerModifyRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerTariffAssignRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerTariffRemoveRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Tariff\TariffListRequest;
 use Muratoffalex\SmartyClient\DTO\Response\AbstractResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Account\AccountCreateResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Account\AccountDeleteResponse;
@@ -40,6 +41,7 @@ use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerModifyResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerTariffAssignResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerTariffRemoveResponse;
 use Muratoffalex\SmartyClient\DTO\Response\ResponseInterface;
+use Muratoffalex\SmartyClient\DTO\Response\Tariff\TariffListResponse;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
@@ -297,17 +299,21 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
-    /**
-     * @return bool
-     */
+    public function tariffList(): TariffListResponse
+    {
+        return $this->request(
+            'post',
+            'tariff/list',
+            new TariffListRequest(),
+            TariffListResponse::class,
+        );
+    }
+
     public function isDebug(): bool
     {
         return $this->debug;
     }
 
-    /**
-     * @param bool $debug
-     */
     public function setDebug(bool $debug): void
     {
         $this->debug = $debug;
