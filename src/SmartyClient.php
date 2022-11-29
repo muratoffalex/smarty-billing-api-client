@@ -91,6 +91,8 @@ class SmartyClient implements SmartyClientInterface
             flags: JSON_OBJECT_AS_ARRAY
         );
 
+        $body = $this->postArrayProcessing($body);
+
         $body['client_id'] = $this->clientId;
         $body['signature'] = $this->getSignature($body);
 
@@ -122,7 +124,6 @@ class SmartyClient implements SmartyClientInterface
         foreach ($requestData as $key => $value) {
             $signature .= sprintf('%s:%s;', $key, $value);
         }
-
         $signature .= $this->billingApiKey;
         $signatureBase64 = base64_encode($signature);
 
@@ -307,6 +308,17 @@ class SmartyClient implements SmartyClientInterface
             new TariffListRequest(),
             TariffListResponse::class,
         );
+    }
+
+    public function postArrayProcessing(array $array): array
+    {
+        foreach ($array as &$item) {
+            if (is_array($item)) {
+                $item = sprintf('[%s]', implode(', ', $item));
+            }
+        }
+
+        return $array;
     }
 
     public function isDebug(): bool
