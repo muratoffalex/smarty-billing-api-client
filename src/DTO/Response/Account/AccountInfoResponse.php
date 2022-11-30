@@ -10,9 +10,9 @@ class AccountInfoResponse extends AbstractResponse
     public int $active;
     public string $statusReason;
     public int $autoActivationPeriod;
-    public \DateTime $extensionDate;
-    public \DateTime $activationDate;
-    public \DateTime $deactivationDate;
+    public string $extensionDate;
+    public string $activationDate;
+    public string $deactivationDate;
     public int $allowMultipleLogin;
     public int $allowLoginByAbonement;
     public int $allowLoginByDeviceUid;
