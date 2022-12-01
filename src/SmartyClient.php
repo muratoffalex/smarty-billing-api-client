@@ -40,7 +40,6 @@ use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerListResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerModifyResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerTariffAssignResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerTariffRemoveResponse;
-use Muratoffalex\SmartyClient\DTO\Response\ResponseInterface;
 use Muratoffalex\SmartyClient\DTO\Response\Tariff\TariffListResponse;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
@@ -61,17 +60,18 @@ class SmartyClient implements SmartyClientInterface
     private SerializerInterface $serializer;
 
     public function __construct(
-        string $billingApiUrl,
-        string $billingApiKey,
-        int    $clientId,
-        bool $debug = false
+        string    $billingApiUrl,
+        string    $billingApiKey,
+        int       $clientId,
+        int|float $timeout = 2,
+        bool      $debug = false
     )
     {
         $this->billingApiKey = $billingApiKey;
         $this->clientId = $clientId;
         $this->client = new Client([
             'base_uri' => $billingApiUrl,
-            'timeout' => 2,
+            'timeout' => $timeout,
         ]);
         $this->debug = $debug;
 
@@ -79,6 +79,16 @@ class SmartyClient implements SmartyClientInterface
         $normalizers = [new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter()), new ArrayDenormalizer()];
 
         $this->serializer = new Serializer($normalizers, $encoders);
+    }
+
+    public function customerList(?CustomerListRequest $request): CustomerListResponse
+    {
+        return $this->request(
+            'get',
+            'customer/list',
+            $request ?? CustomerListRequest::create(),
+            CustomerListResponse::class
+        );
     }
 
     /**
@@ -117,6 +127,17 @@ class SmartyClient implements SmartyClientInterface
         return $responseObject;
     }
 
+    public function postArrayProcessing(array $array): array
+    {
+        foreach ($array as &$item) {
+            if (is_array($item)) {
+                $item = sprintf('[%s]', implode(', ', $item));
+            }
+        }
+
+        return $array;
+    }
+
     private function getSignature(array $requestData): string
     {
         ksort($requestData);
@@ -130,14 +151,14 @@ class SmartyClient implements SmartyClientInterface
         return md5($signatureBase64);
     }
 
-    public function customerList(?CustomerListRequest $request): CustomerListResponse
+    public function isDebug(): bool
     {
-        return $this->request(
-            'get',
-            'customer/list',
-            $request ?? CustomerListRequest::create(),
-            CustomerListResponse::class
-        );
+        return $this->debug;
+    }
+
+    public function setDebug(bool $debug): void
+    {
+        $this->debug = $debug;
     }
 
     public function customerInfo(?CustomerInfoRequest $request): CustomerInfoResponse
@@ -308,26 +329,5 @@ class SmartyClient implements SmartyClientInterface
             new TariffListRequest(),
             TariffListResponse::class,
         );
-    }
-
-    public function postArrayProcessing(array $array): array
-    {
-        foreach ($array as &$item) {
-            if (is_array($item)) {
-                $item = sprintf('[%s]', implode(', ', $item));
-            }
-        }
-
-        return $array;
-    }
-
-    public function isDebug(): bool
-    {
-        return $this->debug;
-    }
-
-    public function setDebug(bool $debug): void
-    {
-        $this->debug = $debug;
     }
 }
