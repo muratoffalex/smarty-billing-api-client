@@ -41,6 +41,9 @@ use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerModifyResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerTariffAssignResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerTariffRemoveResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Tariff\TariffListResponse;
+use Muratoffalex\SmartyClient\Exception\NotSuccessStatusCodeException;
+use Muratoffalex\SmartyClient\Exception\SmartyClientBaseException;
+use Muratoffalex\SmartyClient\Exception\SqlServerHasGoneAwayException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
@@ -55,6 +58,9 @@ class SmartyClient implements SmartyClientInterface
     private string $billingApiKey;
     private int $clientId;
 
+    private int $retriesCount;
+    private int $retryCount = 0;
+
     private bool $debug;
 
     private SerializerInterface $serializer;
@@ -64,6 +70,7 @@ class SmartyClient implements SmartyClientInterface
         string    $billingApiKey,
         int       $clientId,
         int|float $timeout = 2,
+        int $retriesCount = 0,
         bool      $debug = false
     )
     {
@@ -74,6 +81,7 @@ class SmartyClient implements SmartyClientInterface
             'timeout' => $timeout,
         ]);
         $this->debug = $debug;
+        $this->retriesCount = $retriesCount;
 
         $encoders = [new JsonEncoder()];
         $normalizers = [new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter()), new ArrayDenormalizer()];
@@ -93,6 +101,7 @@ class SmartyClient implements SmartyClientInterface
 
     /**
      * @throws GuzzleException
+     * @throws SmartyClientBaseException
      */
     private function request(string $method, string $uri, AbstractRequest $request, string $responseClass): mixed
     {
@@ -117,11 +126,34 @@ class SmartyClient implements SmartyClientInterface
             var_dump($options);
         }
 
-        $response = $this->client->request($method, $uri, $options);
+        // кастомный ретрай
+        // ретраим если:
+        // - гузли вернул исключение;
+        // - статус код не 200;
+        // - статус код 200, но код ошибки от смарти = -1;
+        try {
+            $response = $this->client->request($method, $uri, $options);
 
-        if ($response->getStatusCode() === 200) {
-            $responseObject = $this->serializer->deserialize($response->getBody()->getContents(), $responseClass, 'json');
+            if ($response->getStatusCode() === 200) {
+                /** @var AbstractResponse $responseObject */
+                $responseObject = $this->serializer->deserialize($response->getBody()->getContents(), $responseClass, 'json');
+                if ($responseObject->error === -1) {
+                    throw new SqlServerHasGoneAwayException($responseObject->errorMessage.'; code - '.$responseObject->error, $responseObject->error);
+                }
+            } else {
+                throw new NotSuccessStatusCodeException();
+            }
+        } catch (\Exception $exception) {
+            if ($this->retriesCount > 0 && $this->retryCount < $this->retriesCount) {
+                echo $exception::class.' retry '.($this->retryCount+1).PHP_EOL;
+                $this->retryCount++;
+                return $this->request($method, $uri, $request, $responseClass);
+            } else {
+                throw $exception;
+            }
         }
+
+        $this->retryCount = 0;
 
         /** @var AbstractResponse */
         return $responseObject;
