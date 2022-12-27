@@ -20,10 +20,10 @@ class AccountDeviceCreateRequest extends AbstractRequest
      * @throws SmartyClientBaseException
      */
     public function __construct(
-        ?int $accountId = null,
-        ?int $abonement = null,
         string      $systemName,
         string      $deviceUid,
+        ?int $accountId = null,
+        ?int $abonement = null,
     )
     {
         if (($accountId === null && $abonement === null) || ($accountId !== null && $abonement !== null)) {
