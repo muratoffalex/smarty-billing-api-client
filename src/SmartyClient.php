@@ -145,13 +145,13 @@ class SmartyClient implements SmartyClientInterface
                     throw new SqlServerHasGoneAwayException($responseObject->errorMessage.'; code - '.$responseObject->error, $responseObject->error);
                 }
 
-                if ($responseObject->error !== 0) {
-                    throw new SmartyError($responseObject);
-                }
+//                if ($responseObject->error !== 0) {
+//                    throw new SmartyError($responseObject);
+//                }
             } else {
                 throw new NotSuccessStatusCodeException($response->getStatusCode(), $uri);
             }
-        } catch (NotSuccessStatusCodeException $exception) {
+        } catch (NotSuccessStatusCodeException|GuzzleException|SqlServerHasGoneAwayException $exception) {
             if ($this->retriesCount > 0 && $this->retryCount < $this->retriesCount) {
                 echo $exception::class.' retry '.($this->retryCount+1).PHP_EOL;
                 $this->retryCount++;

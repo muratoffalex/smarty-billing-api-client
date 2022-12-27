@@ -12,7 +12,7 @@ class SmartyError extends SmartyClientBaseException
     public function __construct(AbstractResponse $response)
     {
         $this->response = $response;
-        parent::__construct();
+        parent::__construct('Smarty вернул ошибку: '. $response->error.' | код ошибки: '.$response->errorMessage);
     }
 
     /**
