@@ -2,6 +2,7 @@
 
 namespace Muratoffalex\SmartyClient;
 
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Muratoffalex\SmartyClient\DTO\Request\AbstractRequest;
@@ -43,6 +44,7 @@ use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerTariffRemoveResponse
 use Muratoffalex\SmartyClient\DTO\Response\Tariff\TariffListResponse;
 use Muratoffalex\SmartyClient\Exception\NotSuccessStatusCodeException;
 use Muratoffalex\SmartyClient\Exception\SmartyClientBaseException;
+use Muratoffalex\SmartyClient\Exception\SmartyError;
 use Muratoffalex\SmartyClient\Exception\SqlServerHasGoneAwayException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
@@ -101,7 +103,8 @@ class SmartyClient implements SmartyClientInterface
 
     /**
      * @throws GuzzleException
-     * @throws SmartyClientBaseException
+     * @throws NotSuccessStatusCodeException
+     * @throws SqlServerHasGoneAwayException
      */
     private function request(string $method, string $uri, AbstractRequest $request, string $responseClass): mixed
     {
@@ -140,10 +143,14 @@ class SmartyClient implements SmartyClientInterface
                 if ($responseObject->error === -1) {
                     throw new SqlServerHasGoneAwayException($responseObject->errorMessage.'; code - '.$responseObject->error, $responseObject->error);
                 }
+
+//                if ($responseObject->error !== 0) {
+//                    throw new SmartyError($responseObject);
+//                }
             } else {
-                throw new NotSuccessStatusCodeException();
+                throw new NotSuccessStatusCodeException($response->getStatusCode(), $uri);
             }
-        } catch (\Exception $exception) {
+        } catch (NotSuccessStatusCodeException $exception) {
             if ($this->retriesCount > 0 && $this->retryCount < $this->retriesCount) {
                 echo $exception::class.' retry '.($this->retryCount+1).PHP_EOL;
                 $this->retryCount++;
@@ -283,6 +290,11 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @throws SqlServerHasGoneAwayException
+     * @throws NotSuccessStatusCodeException
+     * @throws GuzzleException
+     */
     public function accountInfo(AccountInfoRequest $request): AccountInfoResponse
     {
         return $this->request(
@@ -293,6 +305,11 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @throws NotSuccessStatusCodeException
+     * @throws SqlServerHasGoneAwayException
+     * @throws GuzzleException
+     */
     public function accountList(AccountListRequest $request): AccountListResponse
     {
         return $this->request(
@@ -303,6 +320,11 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @throws SqlServerHasGoneAwayException
+     * @throws NotSuccessStatusCodeException
+     * @throws GuzzleException
+     */
     public function accountDeviceCreate(AccountDeviceCreateRequest $request): AccountDeviceCreateResponse
     {
         return $this->request(
@@ -313,6 +335,11 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @throws NotSuccessStatusCodeException
+     * @throws SqlServerHasGoneAwayException
+     * @throws GuzzleException
+     */
     public function accountDeviceDelete(AccountDeviceCreateRequest $request): AccountDeviceDeleteResponse
     {
         return $this->request(
@@ -323,6 +350,11 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @throws SqlServerHasGoneAwayException
+     * @throws NotSuccessStatusCodeException
+     * @throws GuzzleException
+     */
     public function accountDeviceModify(AccountDeviceModifyRequest $request): AccountDeviceModifyResponse
     {
         return $this->request(
@@ -333,6 +365,11 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @throws NotSuccessStatusCodeException
+     * @throws SqlServerHasGoneAwayException
+     * @throws GuzzleException
+     */
     public function accountTariffAssign(AccountTariffAssignRequest $request): AccountTariffAssignResponse
     {
         return $this->request(
@@ -343,6 +380,11 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @throws SqlServerHasGoneAwayException
+     * @throws NotSuccessStatusCodeException
+     * @throws GuzzleException
+     */
     public function accountTariffRemove(AccountTariffRemoveRequest $request): AccountTariffRemoveResponse
     {
         return $this->request(
@@ -353,6 +395,11 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @throws NotSuccessStatusCodeException
+     * @throws SqlServerHasGoneAwayException
+     * @throws GuzzleException
+     */
     public function tariffList(): TariffListResponse
     {
         return $this->request(
