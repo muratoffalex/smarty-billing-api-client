@@ -105,6 +105,7 @@ class SmartyClient implements SmartyClientInterface
      * @throws GuzzleException
      * @throws NotSuccessStatusCodeException
      * @throws SqlServerHasGoneAwayException
+     * @throws SmartyError
      */
     private function request(string $method, string $uri, AbstractRequest $request, string $responseClass): mixed
     {
@@ -144,9 +145,9 @@ class SmartyClient implements SmartyClientInterface
                     throw new SqlServerHasGoneAwayException($responseObject->errorMessage.'; code - '.$responseObject->error, $responseObject->error);
                 }
 
-//                if ($responseObject->error !== 0) {
-//                    throw new SmartyError($responseObject);
-//                }
+                if ($responseObject->error !== 0) {
+                    throw new SmartyError($responseObject);
+                }
             } else {
                 throw new NotSuccessStatusCodeException($response->getStatusCode(), $uri);
             }
