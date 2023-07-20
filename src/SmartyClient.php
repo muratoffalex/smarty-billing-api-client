@@ -2,7 +2,6 @@
 
 namespace Muratoffalex\SmartyClient;
 
-use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Muratoffalex\SmartyClient\DTO\Request\AbstractRequest;
@@ -22,7 +21,12 @@ use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerListRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerModifyRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerTariffAssignRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Customer\CustomerTariffRemoveRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Tariff\TariffAdditionalListRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Tariff\TariffBasicListRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Tariff\TariffCreateRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Tariff\TariffDeleteRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Tariff\TariffListRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Tariff\TariffModifyRequest;
 use Muratoffalex\SmartyClient\DTO\Response\AbstractResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Account\AccountCreateResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Account\AccountDeleteResponse;
@@ -41,9 +45,13 @@ use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerListResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerModifyResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerTariffAssignResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Customer\CustomerTariffRemoveResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Tariff\TariffAdditionalListResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Tariff\TariffBasicListResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Tariff\TariffCreateResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Tariff\TariffDeleteResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Tariff\TariffListResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Tariff\TariffModifyResponse;
 use Muratoffalex\SmartyClient\Exception\NotSuccessStatusCodeException;
-use Muratoffalex\SmartyClient\Exception\SmartyClientBaseException;
 use Muratoffalex\SmartyClient\Exception\SmartyError;
 use Muratoffalex\SmartyClient\Exception\SqlServerHasGoneAwayException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -59,12 +67,9 @@ class SmartyClient implements SmartyClientInterface
     private Client $client;
     private string $billingApiKey;
     private int $clientId;
-
     private int $retriesCount;
     private int $retryCount = 0;
-
     private bool $debug;
-
     private SerializerInterface $serializer;
 
     public function __construct(
@@ -72,7 +77,7 @@ class SmartyClient implements SmartyClientInterface
         string    $billingApiKey,
         int       $clientId,
         int|float $timeout = 2,
-        int $retriesCount = 0,
+        int       $retriesCount = 0,
         bool      $debug = false
     )
     {
@@ -142,7 +147,7 @@ class SmartyClient implements SmartyClientInterface
                 /** @var AbstractResponse $responseObject */
                 $responseObject = $this->serializer->deserialize($response->getBody()->getContents(), $responseClass, 'json');
                 if ($responseObject->error === -1) {
-                    throw new SqlServerHasGoneAwayException($responseObject->errorMessage.'; code - '.$responseObject->error, $responseObject->error);
+                    throw new SqlServerHasGoneAwayException($responseObject->errorMessage . '; code - ' . $responseObject->error, $responseObject->error);
                 }
 
 //                if ($responseObject->error !== 0) {
@@ -153,7 +158,7 @@ class SmartyClient implements SmartyClientInterface
             }
         } catch (NotSuccessStatusCodeException|GuzzleException|SqlServerHasGoneAwayException $exception) {
             if ($this->retriesCount > 0 && $this->retryCount < $this->retriesCount) {
-                echo $exception::class.' retry '.($this->retryCount+1).PHP_EOL;
+                echo $exception::class . ' retry ' . ($this->retryCount + 1) . PHP_EOL;
                 $this->retryCount++;
                 return $this->request($method, $uri, $request, $responseClass);
             } else {
@@ -408,6 +413,81 @@ class SmartyClient implements SmartyClientInterface
             'tariff/list',
             new TariffListRequest(),
             TariffListResponse::class,
+        );
+    }
+
+    /**
+     * @throws NotSuccessStatusCodeException
+     * @throws SqlServerHasGoneAwayException
+     * @throws GuzzleException
+     */
+    public function tariffBasicList(): TariffListResponse
+    {
+        return $this->request(
+            'post',
+            'tariff/basic/list',
+            new TariffBasicListRequest(),
+            TariffBasicListResponse::class,
+        );
+    }
+
+    /**
+     * @throws NotSuccessStatusCodeException
+     * @throws SqlServerHasGoneAwayException
+     * @throws GuzzleException
+     */
+    public function tariffAdditionalList(): TariffListResponse
+    {
+        return $this->request(
+            'post',
+            'tariff/additional/list',
+            new TariffAdditionalListRequest(),
+            TariffAdditionalListResponse::class,
+        );
+    }
+
+    /**
+     * @throws NotSuccessStatusCodeException
+     * @throws SqlServerHasGoneAwayException
+     * @throws GuzzleException
+     */
+    public function tariffCreate(TariffCreateRequest $request): TariffListResponse
+    {
+        return $this->request(
+            'post',
+            'tariff/create',
+            $request,
+            TariffCreateResponse::class,
+        );
+    }
+
+    /**
+     * @throws NotSuccessStatusCodeException
+     * @throws SqlServerHasGoneAwayException
+     * @throws GuzzleException
+     */
+    public function tariffModify(TariffModifyRequest $request): TariffListResponse
+    {
+        return $this->request(
+            'post',
+            'tariff/modify',
+            $request,
+            TariffModifyResponse::class,
+        );
+    }
+
+    /**
+     * @throws NotSuccessStatusCodeException
+     * @throws SqlServerHasGoneAwayException
+     * @throws GuzzleException|SmartyError
+     */
+    public function tariffDelete(TariffDeleteRequest $request): TariffListResponse
+    {
+        return $this->request(
+            'post',
+            'tariff/delete',
+            $request,
+            TariffDeleteResponse::class,
         );
     }
 }
