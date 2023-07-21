@@ -27,15 +27,21 @@ class TariffCreateRequest extends AbstractRequest
 
     public function __construct(
         string $name,
-        int $period = 0,
         int $basicTariffPriority = 0,
+        int $period = 0,
         int $sessionsCount = -1,
         int $basicSessionsCount = -1,
+        int $availableToUnsubscribe = 0,
+        int $price = 0,
+        ?int $defaultActivationPrice = null,
     ) {
         $this->name = $name;
         $this->period = $period;
         $this->basicTariffPriority = $basicTariffPriority;
         $this->sessionsCount = $sessionsCount;
         $this->basicSessionsCount = $basicSessionsCount;
+        $this->availableToUnsubscribe = $availableToUnsubscribe;
+        $this->price = $price;
+        $this->defaultActivationPrice = $defaultActivationPrice;
     }
 }
