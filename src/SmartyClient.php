@@ -421,7 +421,7 @@ class SmartyClient implements SmartyClientInterface
      * @throws SqlServerHasGoneAwayException
      * @throws GuzzleException
      */
-    public function tariffBasicList(): TariffListResponse
+    public function tariffBasicList(): TariffBasicListResponse
     {
         return $this->request(
             'post',
@@ -436,7 +436,7 @@ class SmartyClient implements SmartyClientInterface
      * @throws SqlServerHasGoneAwayException
      * @throws GuzzleException
      */
-    public function tariffAdditionalList(): TariffListResponse
+    public function tariffAdditionalList(): TariffAdditionalListResponse
     {
         return $this->request(
             'post',
@@ -451,7 +451,7 @@ class SmartyClient implements SmartyClientInterface
      * @throws SqlServerHasGoneAwayException
      * @throws GuzzleException
      */
-    public function tariffCreate(TariffCreateRequest $request): TariffListResponse
+    public function tariffCreate(TariffCreateRequest $request): TariffCreateResponse
     {
         return $this->request(
             'post',
@@ -466,7 +466,7 @@ class SmartyClient implements SmartyClientInterface
      * @throws SqlServerHasGoneAwayException
      * @throws GuzzleException
      */
-    public function tariffModify(TariffModifyRequest $request): TariffListResponse
+    public function tariffModify(TariffModifyRequest $request): TariffModifyResponse
     {
         return $this->request(
             'post',
@@ -481,7 +481,7 @@ class SmartyClient implements SmartyClientInterface
      * @throws SqlServerHasGoneAwayException
      * @throws GuzzleException|SmartyError
      */
-    public function tariffDelete(TariffDeleteRequest $request): TariffListResponse
+    public function tariffDelete(TariffDeleteRequest $request): TariffDeleteResponse
     {
         return $this->request(
             'post',
