@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "guzzlehttp/guzzle": "^7.0",
+        "guzzlehttp/guzzle": "^6.3",
         "symfony/serializer": "^6.1",
         "symfony/property-access": "^6.1"
     }
