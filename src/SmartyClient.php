@@ -98,16 +98,6 @@ class SmartyClient implements SmartyClientInterface
         $this->serializer = new Serializer($normalizers, $encoders);
     }
 
-    public function customerList(?CustomerListRequest $request): CustomerListResponse
-    {
-        return $this->request(
-            'get',
-            'customer/list',
-            $request ?? CustomerListRequest::create(),
-            CustomerListResponse::class
-        );
-    }
-
     /**
      * @throws GuzzleException
      * @throws NotSuccessStatusCodeException
@@ -215,6 +205,16 @@ class SmartyClient implements SmartyClientInterface
             'customer/info',
             $request,
             CustomerInfoResponse::class,
+        );
+    }
+
+    public function customerList(?CustomerListRequest $request): CustomerListResponse
+    {
+        return $this->request(
+            'get',
+            'customer/list',
+            $request ?? CustomerListRequest::create(),
+            CustomerListResponse::class
         );
     }
 
