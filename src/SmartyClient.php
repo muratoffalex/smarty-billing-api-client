@@ -11,6 +11,7 @@ use Muratoffalex\SmartyClient\DTO\Request\Account\AccountDeviceCreateRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Account\AccountDeviceModifyRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Account\AccountInfoRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Account\AccountListRequest;
+use Muratoffalex\SmartyClient\DTO\Request\Account\AccountMessageCreateRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Account\AccountModifyRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Account\AccountTariffAssignRequest;
 use Muratoffalex\SmartyClient\DTO\Request\Account\AccountTariffRemoveRequest;
@@ -35,6 +36,7 @@ use Muratoffalex\SmartyClient\DTO\Response\Account\AccountDeviceDeleteResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Account\AccountDeviceModifyResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Account\AccountInfoResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Account\AccountListResponse;
+use Muratoffalex\SmartyClient\DTO\Response\Account\AccountMessageCreateResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Account\AccountModifyResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Account\AccountTariffAssignResponse;
 use Muratoffalex\SmartyClient\DTO\Response\Account\AccountTariffRemoveResponse;
@@ -383,6 +385,16 @@ class SmartyClient implements SmartyClientInterface
             'account/tariff/assign',
             $request,
             AccountTariffAssignResponse::class,
+        );
+    }
+
+    public function accountMessageCreate(AccountMessageCreateRequest $request): AccountMessageCreateResponse
+    {
+        return $this->request(
+            'post',
+            'account/message/create',
+            $request,
+            AccountMessageCreateResponse::class,
         );
     }
 

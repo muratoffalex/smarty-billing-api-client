@@ -4,6 +4,10 @@ namespace Muratoffalex\SmartyClient\DTO\Request;
 
 abstract class AbstractRequest implements RequestInterface
 {
+    public string $method;
+    public string $uri;
+    public string $responseClass;
+
     public function toArray(): array
     {
         $array = array_filter((array) $this, static fn($value) => $value !== null);
