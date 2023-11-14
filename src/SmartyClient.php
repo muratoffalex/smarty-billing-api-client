@@ -64,16 +64,48 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ *
+ */
 class SmartyClient implements SmartyClientInterface
 {
+    /**
+     * @var Client
+     */
     private Client $client;
+    /**
+     * @var string
+     */
     private string $billingApiKey;
+    /**
+     * @var int
+     */
     private int $clientId;
+    /**
+     * @var int
+     */
     private int $retriesCount;
+    /**
+     * @var int
+     */
     private int $retryCount = 0;
+    /**
+     * @var bool
+     */
     private bool $debug;
+    /**
+     * @var SerializerInterface|Serializer
+     */
     private SerializerInterface $serializer;
 
+    /**
+     * @param string $billingApiUrl
+     * @param string $billingApiKey
+     * @param int $clientId
+     * @param int|float $timeout
+     * @param int $retriesCount
+     * @param bool $debug
+     */
     public function __construct(
         string    $billingApiUrl,
         string    $billingApiKey,
@@ -164,6 +196,10 @@ class SmartyClient implements SmartyClientInterface
         return $responseObject;
     }
 
+    /**
+     * @param array $array
+     * @return array
+     */
     public function postArrayProcessing(array $array): array
     {
         foreach ($array as &$item) {
@@ -175,6 +211,10 @@ class SmartyClient implements SmartyClientInterface
         return $array;
     }
 
+    /**
+     * @param array $requestData
+     * @return string
+     */
     private function getSignature(array $requestData): string
     {
         ksort($requestData);
@@ -188,16 +228,31 @@ class SmartyClient implements SmartyClientInterface
         return md5($signatureBase64);
     }
 
+    /**
+     * @return bool
+     */
     public function isDebug(): bool
     {
         return $this->debug;
     }
 
+    /**
+     * @param bool $debug
+     * @return void
+     */
     public function setDebug(bool $debug): void
     {
         $this->debug = $debug;
     }
 
+    /**
+     * @param CustomerInfoRequest|null $request
+     * @return CustomerInfoResponse
+     * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
+     */
     public function customerInfo(?CustomerInfoRequest $request): CustomerInfoResponse
     {
         return $this->request(
@@ -208,6 +263,14 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @param CustomerListRequest|null $request
+     * @return CustomerListResponse
+     * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
+     */
     public function customerList(?CustomerListRequest $request): CustomerListResponse
     {
         return $this->request(
@@ -218,6 +281,14 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @param CustomerCreateRequest $request
+     * @return CustomerCreateResponse
+     * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
+     */
     public function customerCreate(CustomerCreateRequest $request): CustomerCreateResponse
     {
         return $this->request(
@@ -228,6 +299,14 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @param CustomerModifyRequest $request
+     * @return CustomerModifyResponse
+     * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
+     */
     public function customerModify(CustomerModifyRequest $request): CustomerModifyResponse
     {
         return $this->request(
@@ -238,6 +317,14 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @param CustomerDeleteRequest $request
+     * @return CustomerDeleteResponse
+     * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
+     */
     public function customerDelete(CustomerDeleteRequest $request): CustomerDeleteResponse
     {
         return $this->request(
@@ -248,6 +335,14 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @param CustomerTariffAssignRequest $request
+     * @return CustomerTariffAssignResponse
+     * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
+     */
     public function customerTariffAssign(CustomerTariffAssignRequest $request): CustomerTariffAssignResponse
     {
         return $this->request(
@@ -258,6 +353,14 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @param CustomerTariffRemoveRequest $request
+     * @return CustomerTariffRemoveResponse
+     * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
+     */
     public function customerTariffRemove(CustomerTariffRemoveRequest $request): CustomerTariffRemoveResponse
     {
         return $this->request(
@@ -268,6 +371,14 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @param AccountCreateRequest $request
+     * @return AccountCreateResponse
+     * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
+     */
     public function accountCreate(AccountCreateRequest $request): AccountCreateResponse
     {
         return $this->request(
@@ -278,6 +389,14 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @param AccountModifyRequest $request
+     * @return AccountModifyResponse
+     * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
+     */
     public function accountModify(AccountModifyRequest $request): AccountModifyResponse
     {
         return $this->request(
@@ -288,6 +407,14 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @param AccountDeleteRequest $request
+     * @return AccountDeleteResponse
+     * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
+     */
     public function accountDelete(AccountDeleteRequest $request): AccountDeleteResponse
     {
         return $this->request(
@@ -299,9 +426,12 @@ class SmartyClient implements SmartyClientInterface
     }
 
     /**
-     * @throws SqlServerHasGoneAwayException
-     * @throws NotSuccessStatusCodeException
+     * @param AccountInfoRequest $request
+     * @return AccountInfoResponse
      * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
      */
     public function accountInfo(AccountInfoRequest $request): AccountInfoResponse
     {
@@ -314,9 +444,12 @@ class SmartyClient implements SmartyClientInterface
     }
 
     /**
-     * @throws NotSuccessStatusCodeException
-     * @throws SqlServerHasGoneAwayException
+     * @param AccountListRequest $request
+     * @return AccountListResponse
      * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
      */
     public function accountList(AccountListRequest $request): AccountListResponse
     {
@@ -329,9 +462,12 @@ class SmartyClient implements SmartyClientInterface
     }
 
     /**
-     * @throws SqlServerHasGoneAwayException
-     * @throws NotSuccessStatusCodeException
+     * @param AccountDeviceCreateRequest $request
+     * @return AccountDeviceCreateResponse
      * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
      */
     public function accountDeviceCreate(AccountDeviceCreateRequest $request): AccountDeviceCreateResponse
     {
@@ -344,9 +480,12 @@ class SmartyClient implements SmartyClientInterface
     }
 
     /**
-     * @throws NotSuccessStatusCodeException
-     * @throws SqlServerHasGoneAwayException
+     * @param AccountDeviceCreateRequest $request
+     * @return AccountDeviceDeleteResponse
      * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
      */
     public function accountDeviceDelete(AccountDeviceCreateRequest $request): AccountDeviceDeleteResponse
     {
@@ -359,9 +498,12 @@ class SmartyClient implements SmartyClientInterface
     }
 
     /**
-     * @throws SqlServerHasGoneAwayException
-     * @throws NotSuccessStatusCodeException
+     * @param AccountDeviceModifyRequest $request
+     * @return AccountDeviceModifyResponse
      * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
      */
     public function accountDeviceModify(AccountDeviceModifyRequest $request): AccountDeviceModifyResponse
     {
@@ -374,9 +516,12 @@ class SmartyClient implements SmartyClientInterface
     }
 
     /**
-     * @throws NotSuccessStatusCodeException
-     * @throws SqlServerHasGoneAwayException
+     * @param AccountTariffAssignRequest $request
+     * @return AccountTariffAssignResponse
      * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
      */
     public function accountTariffAssign(AccountTariffAssignRequest $request): AccountTariffAssignResponse
     {
@@ -388,6 +533,12 @@ class SmartyClient implements SmartyClientInterface
         );
     }
 
+    /**
+     * @throws NotSuccessStatusCodeException
+     * @throws SqlServerHasGoneAwayException
+     * @throws GuzzleException
+     * @throws SmartyError
+     */
     public function accountMessageCreate(AccountMessageCreateRequest $request): AccountMessageCreateResponse
     {
         return $this->request(
@@ -399,9 +550,12 @@ class SmartyClient implements SmartyClientInterface
     }
 
     /**
-     * @throws SqlServerHasGoneAwayException
-     * @throws NotSuccessStatusCodeException
+     * @param AccountTariffRemoveRequest $request
+     * @return AccountTariffRemoveResponse
      * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
      */
     public function accountTariffRemove(AccountTariffRemoveRequest $request): AccountTariffRemoveResponse
     {
@@ -414,9 +568,11 @@ class SmartyClient implements SmartyClientInterface
     }
 
     /**
-     * @throws NotSuccessStatusCodeException
-     * @throws SqlServerHasGoneAwayException
+     * @return TariffListResponse
      * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
      */
     public function tariffList(): TariffListResponse
     {
@@ -429,9 +585,11 @@ class SmartyClient implements SmartyClientInterface
     }
 
     /**
-     * @throws NotSuccessStatusCodeException
-     * @throws SqlServerHasGoneAwayException
+     * @return TariffBasicListResponse
      * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
      */
     public function tariffBasicList(): TariffBasicListResponse
     {
@@ -444,9 +602,11 @@ class SmartyClient implements SmartyClientInterface
     }
 
     /**
-     * @throws NotSuccessStatusCodeException
-     * @throws SqlServerHasGoneAwayException
+     * @return TariffAdditionalListResponse
      * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
      */
     public function tariffAdditionalList(): TariffAdditionalListResponse
     {
@@ -459,9 +619,12 @@ class SmartyClient implements SmartyClientInterface
     }
 
     /**
-     * @throws NotSuccessStatusCodeException
-     * @throws SqlServerHasGoneAwayException
+     * @param TariffCreateRequest $request
+     * @return TariffCreateResponse
      * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
      */
     public function tariffCreate(TariffCreateRequest $request): TariffCreateResponse
     {
@@ -474,9 +637,12 @@ class SmartyClient implements SmartyClientInterface
     }
 
     /**
-     * @throws NotSuccessStatusCodeException
-     * @throws SqlServerHasGoneAwayException
+     * @param TariffModifyRequest $request
+     * @return TariffModifyResponse
      * @throws GuzzleException
+     * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
+     * @throws SqlServerHasGoneAwayException
      */
     public function tariffModify(TariffModifyRequest $request): TariffModifyResponse
     {
@@ -489,9 +655,12 @@ class SmartyClient implements SmartyClientInterface
     }
 
     /**
+     * @param TariffDeleteRequest $request
+     * @return TariffDeleteResponse
+     * @throws GuzzleException
      * @throws NotSuccessStatusCodeException
+     * @throws SmartyError
      * @throws SqlServerHasGoneAwayException
-     * @throws GuzzleException|SmartyError
      */
     public function tariffDelete(TariffDeleteRequest $request): TariffDeleteResponse
     {
