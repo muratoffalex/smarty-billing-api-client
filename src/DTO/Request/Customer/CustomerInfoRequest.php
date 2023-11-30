@@ -9,7 +9,7 @@ class CustomerInfoRequest extends AbstractRequest
 {
     public function __construct(
         public ?int $customerId = null,
-        public ?int $extId = null,
+        public ?string $extId = null,
     ) {
         if (($this->customerId === null && $this->extId === null) || ($this->customerId !== null && $this->extId !== null)) {
             throw new SmartyClientBaseException('Need customerId OR extId');
