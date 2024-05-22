@@ -8,7 +8,7 @@ class AccountInfoResponse extends AbstractResponse
 {
     public int $id;
     public int $active;
-    public string $statusReason;
+    public ?string $statusReason;
     public int $autoActivationPeriod;
     public string $extensionDate;
     public string $activationDate;

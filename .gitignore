@@ -5,3 +5,5 @@ test.php
 
 ###> JetBrains <###
 .idea
+
+.php-cs-fixer.cache

@@ -113,8 +113,7 @@ class SmartyClient implements SmartyClientInterface
         int|float $timeout = 2,
         int       $retriesCount = 0,
         bool      $debug = false
-    )
-    {
+    ) {
         $this->billingApiKey = $billingApiKey;
         $this->clientId = $clientId;
         $this->client = new Client([
@@ -169,18 +168,21 @@ class SmartyClient implements SmartyClientInterface
 
             if ($response->getStatusCode() === 200) {
                 /** @var AbstractResponse $responseObject */
-                $responseObject = $this->serializer->deserialize($response->getBody()->getContents(), $responseClass, 'json');
+                $responseObject = $this->serializer->deserialize(
+                    $response->getBody()->getContents(),
+                    $responseClass,
+                    'json',
+                );
                 if ($responseObject->error === -1) {
-                    throw new SqlServerHasGoneAwayException($responseObject->errorMessage . '; code - ' . $responseObject->error, $responseObject->error);
+                    throw new SqlServerHasGoneAwayException(
+                        $responseObject->errorMessage . '; code - ' . $responseObject->error,
+                        $responseObject->error,
+                    );
                 }
-
-//                if ($responseObject->error !== 0) {
-//                    throw new SmartyError($responseObject);
-//                }
             } else {
                 throw new NotSuccessStatusCodeException($response->getStatusCode(), $uri);
             }
-        } catch (NotSuccessStatusCodeException|GuzzleException|SqlServerHasGoneAwayException $exception) {
+        } catch (NotSuccessStatusCodeException | GuzzleException | SqlServerHasGoneAwayException $exception) {
             if ($this->retriesCount > 0 && $this->retryCount < $this->retriesCount) {
                 echo $exception::class . ' retry ' . ($this->retryCount + 1) . PHP_EOL;
                 $this->retryCount++;
